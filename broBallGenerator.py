@@ -4,6 +4,12 @@ from PIL import Image
 
 #load image
 broBallPrime = Image.open("helloBro.jpg")
+area1 = (52, 18, 105, 32)
+area2 = (102, 88, 155, 102)
+square = broBallPrime.crop(area1)
+broBallPrime.paste(square, area2)
+broBallPrime.show()
+
 
 #loading lists
 interjections = json.load(open("interjections.json"))
