@@ -1,7 +1,7 @@
 import json
 import random
 from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageOps
-ImageDraw.ImageDraw.font = ImageFont.truetype("times.ttf", 11.4)
+ImageDraw.ImageDraw.font = ImageFont.truetype("times.ttf", 11.3)
 
 #loading lists
 interjections = json.load(open("interjections.json"))
@@ -57,6 +57,7 @@ def randomColor():
 def generateImage(phrase):
     print(phrase)
     style = random.randrange(2)+1
+    print(style)
     base = f"bbBase{style}.jpg"
     bubble = f"sb{style}.png"
     with Image.open(base).convert("RGBA") as ball, Image.open(bubble) as speechBubble:
@@ -68,7 +69,6 @@ def generateImage(phrase):
         if d.textlength(phrase) > 110:
             textCoord = (45, 17)
             words = phrase.split()
-            print(phrase.split())
             newPhrase = ""
             for entry in words:
                 temp = newPhrase + f" {entry}"
@@ -76,7 +76,7 @@ def generateImage(phrase):
                     newPhrase += "\n"
                 newPhrase += f" {entry}"
             phrase = newPhrase
-        elif d.textlength(phrase) > 70:
+        elif d.textlength(phrase) > 78:
             textCoord = (39, 33)
         #places text on new image and combines it onto the bb image
         d.text(textCoord, phrase, fill=(0, 0, 0, 255))
@@ -84,7 +84,7 @@ def generateImage(phrase):
         coloredBall = ImageOps.colorize(ball.convert("L"), randomColor(), "white")
         withBubble = Image.alpha_composite(coloredBall.convert("RGBA"), speechBubble)
         combine = Image.alpha_composite(withBubble, bluredText)
-        out = combine.resize((1280, 1200))
+        out = combine#.resize((1280, 1200))
         out.show()
 
 generateImage(generatePhrase())
