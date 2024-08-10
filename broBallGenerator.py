@@ -76,11 +76,12 @@ def generateImage(phrase):
                     newPhrase += "\n"
                 newPhrase += f" {entry}"
             phrase = newPhrase
-        elif d.textlength(phrase) > 78:
+        elif d.textlength(phrase.lower()) > 78:
             textCoord = (39, 33)
         #places text on new image and combines it onto the bb image
         d.text(textCoord, phrase, fill=(0, 0, 0, 255))
         bluredText = txt.filter(ImageFilter.GaussianBlur(.5/style))
+        random.seed(phrase)
         coloredBall = ImageOps.colorize(ball.convert("L"), randomColor(), "white")
         withBubble = Image.alpha_composite(coloredBall.convert("RGBA"), speechBubble)
         combine = Image.alpha_composite(withBubble, bluredText)
