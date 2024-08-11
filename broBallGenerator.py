@@ -1,8 +1,11 @@
 import json
 import random
 import string
-from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageOps
+from tkinter import *
+from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageOps, ImageTk
 ImageDraw.ImageDraw.font = ImageFont.truetype("times.ttf", 11.3)
+root = Tk()
+
 
 #loading lists
 interjections = json.load(open("interjections.json"))
@@ -96,14 +99,28 @@ def generateImage(phrase):
             phrase = newPhrase
         elif d.textlength(phrase) > 76:
             textCoord = (39, 33)
-        #places text on new image and combines it onto the bb image
+        #places text on new image
         d.text(textCoord, phrase, fill=(0, 0, 0, 255))
         bluredText = txt.filter(ImageFilter.GaussianBlur(.5/style))
+        #sets seed for random color based on phrase
         random.seed(phrase.lower())
+        #the rest is comp stuff
         coloredBall = ImageOps.colorize(ball.convert("L"), randomColor(), "white")
         withBubble = Image.alpha_composite(coloredBall.convert("RGBA"), speechBubble)
         combine = Image.alpha_composite(withBubble, bluredText)
         out = combine#.resize((1280, 1200))
-        out.show()
+        #out.show()
+        return out
 
-generateImage(generatePhrase())
+#generateImage(generatePhrase())
+
+Label(root, text="bruh").pack()
+
+tkImage = ImageTk.PhotoImage(generateImage(generatePhrase()))
+
+canvas = Canvas(root, width=160, height=150, background='gray75')
+canvas.create_image(0,0, image = tkImage, anchor='nw')
+canvas.pack()
+
+
+root.mainloop()
