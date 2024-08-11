@@ -2,6 +2,7 @@ import json
 import random
 import string
 from tkinter import *
+from tkinter import ttk
 from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageOps, ImageTk
 ImageDraw.ImageDraw.font = ImageFont.truetype("times.ttf", 11.3)
 root = Tk()
@@ -41,7 +42,7 @@ def caseStyle(sentence):
 
 #generates and prints random bro ball phrase
 def generatePhrase():
-    formula = random.randrange(10)
+    formula = random.randrange(10)#random.choices(list(range(10)), weights=(50, 20, 30, 10, 10, 10, 10, 10, 10, 10), k = 1)
     match formula:
         case 0:
             return f"{caseStyle(pick(interjections))} Bro"
@@ -69,16 +70,19 @@ def generatePhrase():
 def randomColor():
     if random.randrange(2) == 1:
         color = random.randrange(200), random.randrange(200), random.randrange(200)
-        print('range limited')
         return color
     color = random.randrange(256), random.randrange(256), random.randrange(256)
     return color
 
+#evil sorry
+updatedPhrase = ""
+
 #generates bro ball image from phrase
 def generateImage(phrase):
+    global updatedPhrase
+    updatedPhrase = phrase
     print(phrase)
     style = random.randrange(2)+1
-    print(style)
     base = f"bbBase{style}.jpg"
     bubble = f"sb{style}.png"
     with Image.open(base).convert("RGBA") as ball, Image.open(bubble) as speechBubble:
@@ -114,13 +118,31 @@ def generateImage(phrase):
 
 #generateImage(generatePhrase())
 
-Label(root, text="bruh").pack()
 
-tkImage = ImageTk.PhotoImage(generateImage(generatePhrase()))
 
-canvas = Canvas(root, width=160, height=150, background='gray75')
-canvas.create_image(0,0, image = tkImage, anchor='nw')
+#tkinter bs
+
+root.geometry("240x220")
+
+ballPil = Image.open("bbBase1.jpg")#generateImage(generatePhrase())
+ballImage = ImageTk.PhotoImage(ballPil)
+
+canvas = Canvas(root, width = 160, height = 150)
 canvas.pack()
+item = canvas.create_image((0,0), image = ballImage, anchor = 'nw')
 
+def updateImage():
+    global ballPil
+    global ballImage
+    ballPil = generateImage(generatePhrase())
+    ballImage = ImageTk.PhotoImage(ballPil)
+    canvas.itemconfig(item, image = ballImage)
+
+
+def saveImage():
+    ballPil.convert("RGB").save("broOutput/" + updatedPhrase.replace(" ", "-") + ".jpg")
+
+Button(root,text='Meet New Bro',command = updateImage).pack()
+Button(root,text='Keep Bro',command = saveImage).pack()
 
 root.mainloop()
