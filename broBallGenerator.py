@@ -1,5 +1,6 @@
 import json
 import random
+import string
 from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageOps
 ImageDraw.ImageDraw.font = ImageFont.truetype("times.ttf", 11.3)
 
@@ -18,39 +19,56 @@ def randomCase(text):
     else:
         return text
 
-#picks a random word from a list and gives it random case
+#picks a random word from a list (this is for easy to read)
 def pick(list):
-    return randomCase(random.choice(list))
+    return (random.choice(list))
+    
+#applies a pattern for uppercase letters
+def caseStyle(sentence):
+    match random.randrange(3):
+        case 0:
+            #first word uppercase
+            return sentence.capitalize()
+        case 1:
+            #all words uppercase
+            return string.capwords(sentence)
+        case 2:
+            #no words uppercase
+            return sentence
 
 #generates and prints random bro ball phrase
 def generatePhrase():
     formula = random.randrange(10)
     match formula:
         case 0:
-            return f"{pick(interjections)} Bro"
+            return f"{caseStyle(pick(interjections))} Bro"
         case 1:
-            return f"{pick(adverbs)} Bro"
+            return f"{caseStyle(pick(adverbs))} Bro"
         case 2:
-            return f"{pick(verbs)} Bro"
+            return f"{caseStyle(pick(verbs))} Bro"
         case 3:
-            return f"{randomCase('i')}'m {pick(adjectives)} Bro"
+            return caseStyle(contractions[0] + " " + pick(adjectives)) + " Bro"
         case 4:
-            return f"{pick(contractions)} {randomCase('being')} {pick(adjectives)} Bro"
+            return caseStyle(pick(contractions) + " being " + pick(adjectives) + " Bro")
         case 5:
-            return f"{pick(verbs)} {pick(pronouns)} Bro"
+            return caseStyle(pick(verbs) + " " + pick(pronouns) + " Bro")
         case 6:
-            return f"{pick(adverbs)} {pick(verbs)} {pick(pronouns)} Bro"
+            return caseStyle(pick(adverbs) + " " +pick(verbs) + " " + pick(pronouns) + " Bro")
         case 7:
-            return f"{pick(verbs)} {pick(adverbs)} Bro"
+            return caseStyle(pick(verbs) + " " + pick(adverbs) + " Bro")
         case 8:
-            return f"{pick(verbs)} {pick(pronouns)} {pick(adverbs)} Bro"
+            return caseStyle(pick(verbs) + " " + pick(pronouns) + " " + pick(adverbs) + " Bro")
         case 9:
-            return f"{pick(contractions)} {pick(adjectives)} Bro"
+            return caseStyle(pick(contractions) + " " + pick(adjectives) + " Bro")
         case _:
             print("uh oh bro")
 
 def randomColor():
-    color = (random.choice(range(256)), random.choice(range(256)), random.choice(range(256)))
+    if random.randrange(2) == 1:
+        color = random.randrange(200), random.randrange(200), random.randrange(200)
+        print('range limited')
+        return color
+    color = random.randrange(256), random.randrange(256), random.randrange(256)
     return color
 
 #generates bro ball image from phrase
@@ -76,12 +94,12 @@ def generateImage(phrase):
                     newPhrase += "\n"
                 newPhrase += f" {entry}"
             phrase = newPhrase
-        elif d.textlength(phrase.lower()) > 78:
+        elif d.textlength(phrase) > 76:
             textCoord = (39, 33)
         #places text on new image and combines it onto the bb image
         d.text(textCoord, phrase, fill=(0, 0, 0, 255))
         bluredText = txt.filter(ImageFilter.GaussianBlur(.5/style))
-        random.seed(phrase)
+        random.seed(phrase.lower())
         coloredBall = ImageOps.colorize(ball.convert("L"), randomColor(), "white")
         withBubble = Image.alpha_composite(coloredBall.convert("RGBA"), speechBubble)
         combine = Image.alpha_composite(withBubble, bluredText)
