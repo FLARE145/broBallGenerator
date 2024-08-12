@@ -2,10 +2,11 @@ import json
 import random
 import string
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, filedialog
+from ttkthemes import ThemedTk
 from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageOps, ImageTk
 ImageDraw.ImageDraw.font = ImageFont.truetype("times.ttf", 11.3)
-root = Tk()
+root = ThemedTk(theme="keramik")
 
 
 #loading lists
@@ -74,13 +75,8 @@ def randomColor():
     color = random.randrange(256), random.randrange(256), random.randrange(256)
     return color
 
-#evil sorry
-updatedPhrase = ""
-
 #generates bro ball image from phrase
 def generateImage(phrase):
-    global updatedPhrase
-    updatedPhrase = phrase
     print(phrase)
     style = random.randrange(2)+1
     base = f"bbBase{style}.jpg"
@@ -114,6 +110,7 @@ def generateImage(phrase):
         combine = Image.alpha_composite(withBubble, bluredText)
         out = combine#.resize((1280, 1200))
         #out.show()
+        random.seed()
         return out
 
 #generateImage(generatePhrase())
@@ -122,27 +119,42 @@ def generateImage(phrase):
 
 #tkinter bs
 
-root.geometry("240x220")
+root.geometry("230x230")
+root.resizable(False, False)
+root.configure(background="gray80")
+root.title("BBGen")
+root.iconbitmap("bbIcon.ico")
 
 ballPil = Image.open("bbBase1.jpg")#generateImage(generatePhrase())
 ballImage = ImageTk.PhotoImage(ballPil)
+currentPhrase = ''
 
-canvas = Canvas(root, width = 160, height = 150)
+ttk.Style().configure('TFrame', background = "white")
+imageHolder = ttk.Frame(root, borderwidth = 5, relief = 'ridge', )
+imageHolder.pack()
+
+canvas = Canvas(imageHolder, width = 160, height = 150)
 canvas.pack()
 item = canvas.create_image((0,0), image = ballImage, anchor = 'nw')
 
 def updateImage():
     global ballPil
     global ballImage
-    ballPil = generateImage(generatePhrase())
+    global currentPhrase
+    currentPhrase = generatePhrase()
+    ballPil = generateImage(currentPhrase)
     ballImage = ImageTk.PhotoImage(ballPil)
     canvas.itemconfig(item, image = ballImage)
-
+    saveButton.config(state = NORMAL)
 
 def saveImage():
-    ballPil.convert("RGB").save("broOutput/" + updatedPhrase.replace(" ", "-") + ".jpg")
+    #ballPil.convert("RGB").save("broOutput/" + currentPhrase.replace(" ", "-") + ".jpg")
+    filePath = filedialog.asksaveasfile(mode='w', defaultextension=".jpg", filetypes=[("JPEG Image", "*.jpg")], initialfile = currentPhrase.lower().replace(" ", "-") + ".jpg")
+    if filePath:
+        ballPil.convert("RGB").save(filePath)
 
-Button(root,text='Meet New Bro',command = updateImage).pack()
-Button(root,text='Keep Bro',command = saveImage).pack()
+ttk.Button(root,text='Meet New Bro', takefocus = False, command = updateImage).pack()
+saveButton = ttk.Button(root,text='Keep Bro', takefocus = False, command = saveImage, state = DISABLED)
+saveButton.pack()
 
 root.mainloop()
