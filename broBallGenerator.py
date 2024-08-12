@@ -43,7 +43,7 @@ def caseStyle(sentence):
 
 #generates and prints random bro ball phrase
 def generatePhrase():
-    formula = random.randrange(10)#random.choices(list(range(10)), weights=(50, 20, 30, 10, 10, 10, 10, 10, 10, 10), k = 1)
+    formula = random.choices(list(range(10)), weights=(60, 20, 30, 15, 8, 10, 2, 5, 3, 10), k = 1)[0]
     match formula:
         case 0:
             return f"{caseStyle(pick(interjections))} Bro"
