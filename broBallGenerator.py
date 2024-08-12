@@ -85,6 +85,8 @@ def generateImage(phrase):
         #creates new image as base for text
         txt = Image.new("RGBA", ball.size, (255, 255, 255, 0))
         d = ImageDraw.Draw(txt)
+        #sets seed for random color based on phrase
+        random.seed(phrase.lower())
         #manages where to place text depending on length
         textCoord = (55, 17)
         if d.textlength(phrase) > 110:
@@ -102,8 +104,6 @@ def generateImage(phrase):
         #places text on new image
         d.text(textCoord, phrase, fill=(0, 0, 0, 255))
         bluredText = txt.filter(ImageFilter.GaussianBlur(.5/style))
-        #sets seed for random color based on phrase
-        random.seed(phrase.lower())
         #the rest is comp stuff
         coloredBall = ImageOps.colorize(ball.convert("L"), randomColor(), "white")
         withBubble = Image.alpha_composite(coloredBall.convert("RGBA"), speechBubble)
@@ -125,7 +125,7 @@ root.configure(background="gray80")
 root.title("BBGen")
 root.iconbitmap("bbIcon.ico")
 
-ballPil = Image.open("bbBase1.jpg")#generateImage(generatePhrase())
+ballPil = Image.open("helloBro.jpg")#generateImage(generatePhrase())
 ballImage = ImageTk.PhotoImage(ballPil)
 currentPhrase = ''
 
