@@ -119,7 +119,7 @@ def generateImage(phrase):
 
 #tkinter bs
 
-root.geometry("230x230")
+root.geometry("240x270")
 root.resizable(False, False)
 root.configure(background="gray80")
 root.title("BBGen")
@@ -129,11 +129,10 @@ ballPil = Image.open("bbBase1.jpg")#generateImage(generatePhrase())
 ballImage = ImageTk.PhotoImage(ballPil)
 currentPhrase = ''
 
-ttk.Style().configure('TFrame', background = "white")
-imageHolder = ttk.Frame(root, borderwidth = 5, relief = 'ridge', )
-imageHolder.pack()
+imageHolder = Frame(root, bd = 5, relief = 'ridge', )
+imageHolder.pack(pady = 5)
 
-canvas = Canvas(imageHolder, width = 160, height = 150)
+canvas = Canvas(imageHolder, width = 160, height = 150, borderwidth = 0, highlightthickness = 0)
 canvas.pack()
 item = canvas.create_image((0,0), image = ballImage, anchor = 'nw')
 
@@ -141,7 +140,11 @@ def updateImage():
     global ballPil
     global ballImage
     global currentPhrase
-    currentPhrase = generatePhrase()
+    inputText = textArea.get("1.0",'end-1c')
+    if inputText == "":
+        currentPhrase = generatePhrase()
+    else:
+        currentPhrase = caseStyle(inputText) + " Bro"
     ballPil = generateImage(currentPhrase)
     ballImage = ImageTk.PhotoImage(ballPil)
     canvas.itemconfig(item, image = ballImage)
@@ -153,6 +156,8 @@ def saveImage():
     if filePath:
         ballPil.convert("RGB").save(filePath)
 
+textArea = Text(root, height = 1, width = 25)
+textArea.pack(pady = (0, 5))
 ttk.Button(root,text='Meet New Bro', takefocus = False, command = updateImage).pack()
 saveButton = ttk.Button(root,text='Keep Bro', takefocus = False, command = saveImage, state = DISABLED)
 saveButton.pack()
