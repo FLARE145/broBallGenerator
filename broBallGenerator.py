@@ -82,11 +82,10 @@ def generateImage(phrase):
     base = f"bbBase{style}.jpg"
     bubble = f"sb{style}.png"
     with Image.open(base).convert("RGBA") as ball, Image.open(bubble) as speechBubble:
+        randomAnchor = "la"
         #creates new image as base for text
         txt = Image.new("RGBA", ball.size, (255, 255, 255, 0))
         d = ImageDraw.Draw(txt)
-        #sets seed for random color based on phrase
-        random.seed(phrase.lower())
         #manages where to place text depending on length
         textCoord = (55, 17)
         if d.textlength(phrase) > 110:
@@ -101,8 +100,13 @@ def generateImage(phrase):
             phrase = newPhrase
         elif d.textlength(phrase) > 76:
             textCoord = (39, 33)
+        elif random.randrange(2) == 1:
+            textCoord = (131, 17)
+            randomAnchor = "ra"
+        #sets seed for random color based on phrase
+        random.seed(phrase.lower())
         #places text on new image
-        d.text(textCoord, phrase, fill=(0, 0, 0, 255))
+        d.text(textCoord, phrase, fill=(0, 0, 0, 255), anchor = randomAnchor)
         bluredText = txt.filter(ImageFilter.GaussianBlur(.5/style))
         #the rest is comp stuff
         coloredBall = ImageOps.colorize(ball.convert("L"), randomColor(), "white")
@@ -119,7 +123,7 @@ def generateImage(phrase):
 
 #tkinter bs
 
-root.geometry("240x270")
+root.geometry("240x240")
 root.resizable(False, False)
 root.configure(background="gray80")
 root.title("BBGen")
@@ -157,9 +161,13 @@ def saveImage():
         ballPil.convert("RGB").save(filePath)
 
 textArea = Text(root, height = 1, width = 25)
-textArea.pack(pady = (0, 5))
-ttk.Button(root,text='Meet New Bro', takefocus = False, command = updateImage).pack()
-saveButton = ttk.Button(root,text='Keep Bro', takefocus = False, command = saveImage, state = DISABLED)
-saveButton.pack()
+textArea.pack(pady = 0)
+
+buttonFrame = Frame(root, bg = "gray80")
+buttonFrame.pack(pady = 5)
+
+ttk.Button(buttonFrame,text='Meet New Bro', takefocus = False, command = updateImage).pack(side='left', padx = (0, 5))
+saveButton = ttk.Button(buttonFrame,text='Keep Bro', takefocus = False, command = saveImage, state = DISABLED)
+saveButton.pack(side='right', padx = (5, 0))
 
 root.mainloop()
