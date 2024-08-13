@@ -112,7 +112,10 @@ def generateImage(phrase):
         #putting it together
         d.text(textCoord, phrase, fill=(0, 0, 0, 255), anchor = randomAnchor)
         bluredText = txt.filter(ImageFilter.GaussianBlur(.5/style))
-        coloredBall = ImageOps.colorize(ball.convert("L"), randomColor(), "white")
+
+        global color
+        color = randomColor()
+        coloredBall = ImageOps.colorize(ball.convert("L"), color, "white")
         withBubble = Image.alpha_composite(coloredBall.convert("RGBA"), speechBubble)
         out = Image.alpha_composite(withBubble, bluredText)
 
@@ -156,6 +159,18 @@ def updateImage():
     canvas.itemconfig(item, image = ballImage)
     saveButton.config(state = NORMAL)
     copyButton.config(state = NORMAL)
+
+    #img = PhotoImage(file="bbIconGray.png")
+    imgPath = resource_path("bbIconGray.png")
+    img = Image.open(imgPath)
+
+    r, g, b, a = img.split()
+    gray = img.convert("L")
+
+    #print(color)
+    colorizedIcon = ImageOps.colorize(gray, color, "white" )
+    colorizedIcon.putalpha(a)
+    root.tk.call('wm', 'iconphoto', root._w, ImageTk.PhotoImage(colorizedIcon))
 
 def saveImage():
     filePath = filedialog.asksaveasfile(mode='w', defaultextension=".jpg", filetypes=[("JPEG Image", "*.jpg")], initialfile = currentPhrase.lower().replace(" ", "-") + ".jpg")
