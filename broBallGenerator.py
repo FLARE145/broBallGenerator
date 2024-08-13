@@ -154,6 +154,8 @@ def updateImage():
         currentPhrase = generatePhrase()
     else:
         currentPhrase = caseStyle(inputText) + " Bro"
+
+    root.title(currentPhrase)
     ballPil = generateImage(currentPhrase)
     ballImage = ImageTk.PhotoImage(ballPil)
     canvas.itemconfig(item, image = ballImage)
