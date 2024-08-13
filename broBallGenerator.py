@@ -3,7 +3,7 @@ import json
 import random
 import string
 from tkinter import *
-from tkinter import ttk, filedialog
+from tkinter import ttk, filedialog, colorchooser
 from ttkthemes import ThemedTk
 from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageOps, ImageTk
 import os, sys
@@ -27,6 +27,9 @@ verbs = json.load(open(resource_path("verbs.json")))
 adjectives = json.load(open(resource_path("adjectives.json")))
 pronouns = json.load(open(resource_path("pronouns.json")))
 contractions = json.load(open(resource_path("contractions.json")))
+
+# global chosenColor
+# chosenColor = 0
 
 #picks a random word from a list (this is for easy to read/ didnt want to update things)
 def pick(list):
@@ -73,15 +76,23 @@ def generatePhrase():
             print("uh oh bro")
 
 #random rgb color but 50% chance it limits the higher values
-def randomColor():
-    if random.randrange(2) == 1:
-        color = random.randrange(200), random.randrange(200), random.randrange(200)
-        return color
-    color = random.randrange(256), random.randrange(256), random.randrange(256)
-    return color
+def getColor():
+    global chosenColor
+    print(chosenColor)
+    if chosenColor == 0:
+    # Random
+        if random.randrange(2) == 1:
+            newColor = random.randrange(200), random.randrange(200), random.randrange(200)
+        else:
+            newColor = random.randrange(256), random.randrange(256), random.randrange(256)
+    else:
+        newColor = chosenColor[0]
+
+    print(newColor)
+    return newColor
 
 #generates bro ball image from phrase
-def generateImage(phrase):
+def generateImage(phrase, usePhraseForSeed = True):
     print(phrase)
     style = random.randrange(2)+1
     base = resource_path("bbBase" + str(style) + ".jpg")
@@ -108,13 +119,14 @@ def generateImage(phrase):
             textCoord = (131, 17)
             randomAnchor = "ra"
         #sets seed for random color based on phrase
-        random.seed(phrase.lower())
+        if usePhraseForSeed:
+            random.seed(phrase.lower())
         #putting it together
         d.text(textCoord, phrase, fill=(0, 0, 0, 255), anchor = randomAnchor)
         bluredText = txt.filter(ImageFilter.GaussianBlur(.5/style))
 
         global color
-        color = randomColor()
+        color = getColor()
         coloredBall = ImageOps.colorize(ball.convert("L"), color, "white")
         withBubble = Image.alpha_composite(coloredBall.convert("RGBA"), speechBubble)
         out = Image.alpha_composite(withBubble, bluredText)
@@ -126,7 +138,7 @@ def generateImage(phrase):
 #the rest of this is tkinter bs
 root = ThemedTk(theme="keramik")
 
-root.geometry("240x240")
+root.geometry("240x270")
 root.resizable(False, False)
 root.configure(background="gray80")
 root.title("BBGen")
@@ -145,18 +157,22 @@ canvas = Canvas(imageHolder, width = 160, height = 150, borderwidth = 0, highlig
 canvas.pack()
 item = canvas.create_image((0,0), image = ballImage, anchor = 'nw')
 
-def updateImage():
+def updateImage(overridePhrase = "", usePhraseForSeed = True):
     global ballPil
     global ballImage
     global currentPhrase
+    global color
     inputText = textArea.get("1.0",'end-1c')
     if inputText == "":
         currentPhrase = generatePhrase()
     else:
         currentPhrase = caseStyle(inputText) + " Bro"
 
+    if overridePhrase != "":
+        currentPhrase = overridePhrase
+
     root.title(currentPhrase)
-    ballPil = generateImage(currentPhrase)
+    ballPil = generateImage(currentPhrase, usePhraseForSeed)
     ballImage = ImageTk.PhotoImage(ballPil)
     canvas.itemconfig(item, image = ballImage)
     saveButton.config(state = NORMAL)
@@ -185,14 +201,50 @@ def copyImage():
     klembord.set({"image/png": clipout.getvalue()})
     clipout.close()
 
+def setColor():
+    global chosenColor
+    global currentPhrase
+
+    chosenColor = colorchooser.askcolor(title = "Color me Bro")
+    print(chosenColor)
+
+    updateImage(currentPhrase)
+
+
+    return
+
+def unsetColor():
+    global chosenColor
+    global currentPhrase
+
+    random.seed(random.random())
+    chosenColor = 0
+
+    updateImage(currentPhrase, False)
+    return
+
 textArea = Text(root, height = 1, width = 25)
 textArea.pack(pady = 0)
 buttonFrame = Frame(root, bg = "gray80")
 buttonFrame.pack(pady = 5)
 ttk.Button(buttonFrame,text='Meet New Bro', takefocus = False, command = updateImage).pack(side='left', padx = (0, 5))
+
 saveButton = ttk.Button(buttonFrame,text='Keep Bro', takefocus = False, command = saveImage, state = DISABLED)
 saveButton.pack(side='right', padx = (5, 0))
+
 copyButton = ttk.Button(buttonFrame,text='Copy Bro', takefocus = False, command = copyImage, state = DISABLED)
-copyButton.pack(side='right', pady = (0, 0))
+copyButton.pack(side='right', padx = (5, 0))
+
+buttonFrameBottomRow = Frame(root, bg = "gray80")
+buttonFrameBottomRow.pack(pady = 2)
+
+setColorButton = ttk.Button(buttonFrameBottomRow,text='Color Bro', takefocus = False, command = setColor)
+setColorButton.pack(side='left', padx = (5,0))
+
+unsetColorButton = ttk.Button(buttonFrameBottomRow,text='Randomly Color Bro', takefocus = False, command = unsetColor)
+unsetColorButton.pack(side='right', padx = (5,0))
+
+chosenColor = 0
+color = 0
 
 root.mainloop()
