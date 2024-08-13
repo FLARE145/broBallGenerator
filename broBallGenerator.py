@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import json
 import random
 import string
@@ -123,7 +124,9 @@ root.geometry("240x240")
 root.resizable(False, False)
 root.configure(background="gray80")
 root.title("BBGen")
-root.iconbitmap(resource_path("bbIcon.ico"))
+img = PhotoImage(file='bbIcon.png')
+root.tk.call('wm', 'iconphoto', root._w, img)
+#root.iconbitmap(resource_path("bbIcon.ico"))
 
 ballPil = Image.open(resource_path("helloBro.jpg"))
 ballImage = ImageTk.PhotoImage(ballPil)
