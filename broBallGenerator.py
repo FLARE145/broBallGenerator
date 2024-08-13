@@ -6,8 +6,6 @@ from tkinter import ttk, filedialog
 from ttkthemes import ThemedTk
 from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageOps, ImageTk
 ImageDraw.ImageDraw.font = ImageFont.truetype("times.ttf", 11.3)
-root = ThemedTk(theme="keramik")
-
 
 #loading lists
 interjections = json.load(open("interjections.json"))
@@ -17,14 +15,7 @@ adjectives = json.load(open("adjectives.json"))
 pronouns = json.load(open("pronouns.json"))
 contractions = json.load(open("contractions.json"))
 
-#50% chance a word will start uppercase
-def randomCase(text):
-    if random.randrange(4) > 0:
-        return text.capitalize()
-    else:
-        return text
-
-#picks a random word from a list (this is for easy to read)
+#picks a random word from a list (this is for easy to read/ didnt want to update things)
 def pick(list):
     return (random.choice(list))
     
@@ -68,6 +59,7 @@ def generatePhrase():
         case _:
             print("uh oh bro")
 
+#random rgb color but 50% chance it limits the higher values
 def randomColor():
     if random.randrange(2) == 1:
         color = random.randrange(200), random.randrange(200), random.randrange(200)
@@ -83,7 +75,6 @@ def generateImage(phrase):
     bubble = f"sb{style}.png"
     with Image.open(base).convert("RGBA") as ball, Image.open(bubble) as speechBubble:
         randomAnchor = "la"
-        #creates new image as base for text
         txt = Image.new("RGBA", ball.size, (255, 255, 255, 0))
         d = ImageDraw.Draw(txt)
         #manages where to place text depending on length
@@ -105,23 +96,18 @@ def generateImage(phrase):
             randomAnchor = "ra"
         #sets seed for random color based on phrase
         random.seed(phrase.lower())
-        #places text on new image
+        #putting it together
         d.text(textCoord, phrase, fill=(0, 0, 0, 255), anchor = randomAnchor)
         bluredText = txt.filter(ImageFilter.GaussianBlur(.5/style))
-        #the rest is comp stuff
         coloredBall = ImageOps.colorize(ball.convert("L"), randomColor(), "white")
         withBubble = Image.alpha_composite(coloredBall.convert("RGBA"), speechBubble)
-        combine = Image.alpha_composite(withBubble, bluredText)
-        out = combine#.resize((1280, 1200))
-        #out.show()
+        out = Image.alpha_composite(withBubble, bluredText)
+        #reset seed for next time
         random.seed()
         return out
 
-#generateImage(generatePhrase())
-
-
-
-#tkinter bs
+#the rest of this is tkinter bs
+root = ThemedTk(theme="keramik")
 
 root.geometry("240x240")
 root.resizable(False, False)
@@ -155,17 +141,14 @@ def updateImage():
     saveButton.config(state = NORMAL)
 
 def saveImage():
-    #ballPil.convert("RGB").save("broOutput/" + currentPhrase.replace(" ", "-") + ".jpg")
     filePath = filedialog.asksaveasfile(mode='w', defaultextension=".jpg", filetypes=[("JPEG Image", "*.jpg")], initialfile = currentPhrase.lower().replace(" ", "-") + ".jpg")
     if filePath:
         ballPil.convert("RGB").save(filePath)
 
 textArea = Text(root, height = 1, width = 25)
 textArea.pack(pady = 0)
-
 buttonFrame = Frame(root, bg = "gray80")
 buttonFrame.pack(pady = 5)
-
 ttk.Button(buttonFrame,text='Meet New Bro', takefocus = False, command = updateImage).pack(side='left', padx = (0, 5))
 saveButton = ttk.Button(buttonFrame,text='Keep Bro', takefocus = False, command = saveImage, state = DISABLED)
 saveButton.pack(side='right', padx = (5, 0))
