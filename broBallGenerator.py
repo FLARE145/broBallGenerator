@@ -5,15 +5,25 @@ from tkinter import *
 from tkinter import ttk, filedialog
 from ttkthemes import ThemedTk
 from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageOps, ImageTk
-ImageDraw.ImageDraw.font = ImageFont.truetype("times.ttf", 11.3)
+import os, sys
 
+#for to compile exe
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+        
+    return os.path.join(base_path, relative_path)
+
+ImageDraw.ImageDraw.font = ImageFont.truetype(resource_path("times.ttf"), 11.3)
 #loading lists
-interjections = json.load(open("interjections.json"))
-adverbs = json.load(open("adverbs.json"))
-verbs = json.load(open("verbs.json"))
-adjectives = json.load(open("adjectives.json"))
-pronouns = json.load(open("pronouns.json"))
-contractions = json.load(open("contractions.json"))
+interjections = json.load(open(resource_path("interjections.json")))
+adverbs = json.load(open(resource_path("adverbs.json")))
+verbs = json.load(open(resource_path("verbs.json")))
+adjectives = json.load(open(resource_path("adjectives.json")))
+pronouns = json.load(open(resource_path("pronouns.json")))
+contractions = json.load(open(resource_path("contractions.json")))
 
 #picks a random word from a list (this is for easy to read/ didnt want to update things)
 def pick(list):
@@ -71,8 +81,8 @@ def randomColor():
 def generateImage(phrase):
     print(phrase)
     style = random.randrange(2)+1
-    base = f"bbBase{style}.jpg"
-    bubble = f"sb{style}.png"
+    base = resource_path("bbBase" + str(style) + ".jpg")
+    bubble = resource_path("sb" + str(style) + ".png")
     with Image.open(base).convert("RGBA") as ball, Image.open(bubble) as speechBubble:
         randomAnchor = "la"
         txt = Image.new("RGBA", ball.size, (255, 255, 255, 0))
@@ -113,9 +123,9 @@ root.geometry("240x240")
 root.resizable(False, False)
 root.configure(background="gray80")
 root.title("BBGen")
-root.iconbitmap("bbIcon.ico")
+root.iconbitmap(resource_path("bbIcon.ico"))
 
-ballPil = Image.open("helloBro.jpg")#generateImage(generatePhrase())
+ballPil = Image.open(resource_path("helloBro.jpg"))
 ballImage = ImageTk.PhotoImage(ballPil)
 currentPhrase = ''
 
