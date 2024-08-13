@@ -7,6 +7,8 @@ from tkinter import ttk, filedialog
 from ttkthemes import ThemedTk
 from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageOps, ImageTk
 import os, sys
+from io import BytesIO
+import klembord
 
 #for to compile exe
 def resource_path(relative_path):
@@ -113,6 +115,7 @@ def generateImage(phrase):
         coloredBall = ImageOps.colorize(ball.convert("L"), randomColor(), "white")
         withBubble = Image.alpha_composite(coloredBall.convert("RGBA"), speechBubble)
         out = Image.alpha_composite(withBubble, bluredText)
+
         #reset seed for next time
         random.seed()
         return out
@@ -152,11 +155,18 @@ def updateImage():
     ballImage = ImageTk.PhotoImage(ballPil)
     canvas.itemconfig(item, image = ballImage)
     saveButton.config(state = NORMAL)
+    copyButton.config(state = NORMAL)
 
 def saveImage():
     filePath = filedialog.asksaveasfile(mode='w', defaultextension=".jpg", filetypes=[("JPEG Image", "*.jpg")], initialfile = currentPhrase.lower().replace(" ", "-") + ".jpg")
     if filePath:
         ballPil.convert("RGB").save(filePath)
+
+def copyImage():
+    clipout = BytesIO()
+    ballPil.convert("RGB").save(clipout, format="png")
+    klembord.set({"image/png": clipout.getvalue()})
+    clipout.close()
 
 textArea = Text(root, height = 1, width = 25)
 textArea.pack(pady = 0)
@@ -165,5 +175,7 @@ buttonFrame.pack(pady = 5)
 ttk.Button(buttonFrame,text='Meet New Bro', takefocus = False, command = updateImage).pack(side='left', padx = (0, 5))
 saveButton = ttk.Button(buttonFrame,text='Keep Bro', takefocus = False, command = saveImage, state = DISABLED)
 saveButton.pack(side='right', padx = (5, 0))
+copyButton = ttk.Button(buttonFrame,text='Copy Bro', takefocus = False, command = copyImage, state = DISABLED)
+copyButton.pack(side='right', pady = (0, 0))
 
 root.mainloop()
