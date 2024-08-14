@@ -5,4 +5,4 @@
 Download it and run it
 
 ### also
-If you want to use not the exe one you gotta get pillow, ttk themes and klembord
+If you want to use not the exe one you gotta get pillow, ttk themes and copykitten

@@ -8,7 +8,7 @@ from ttkthemes import ThemedTk
 from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageOps, ImageTk
 import os, sys
 from io import BytesIO
-import klembord
+import copykitten
 
 #for to compile exe
 def resource_path(relative_path):
@@ -196,10 +196,8 @@ def saveImage():
         ballPil.convert("RGB").save(filePath)
 
 def copyImage():
-    clipout = BytesIO()
-    ballPil.convert("RGB").save(clipout, format="png")
-    klembord.set({"image/png": clipout.getvalue()})
-    clipout.close()
+    global ballPil
+    copykitten.copy_image(ballPil.tobytes(), ballPil.width, ballPil.height)
 
 def setColor():
     global chosenColor
