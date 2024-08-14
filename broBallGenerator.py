@@ -143,7 +143,7 @@ root.geometry("240x270")
 root.resizable(False, False)
 root.configure(background="gray80")
 root.title("BBGen")
-img = PhotoImage(file='bbIcon.png')
+img = PhotoImage(file=resource_path('bbIcon.png'))
 root.tk.call('wm', 'iconphoto', root._w, img)
 #root.iconbitmap(resource_path("bbIcon.ico"))
 
