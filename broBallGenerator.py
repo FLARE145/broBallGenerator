@@ -178,6 +178,7 @@ def updateImage(overridePhrase = "", usePhraseForSeed = True):
     canvas.itemconfig(item, image = ballImage)
     saveButton.config(state = NORMAL)
     copyButton.config(state = NORMAL)
+    setColorButton.config(state = NORMAL)
 
     #img = PhotoImage(file="bbIconGray.png")
     imgPath = resource_path("bbIconGray.png")
@@ -240,7 +241,7 @@ saveButton.pack(side='right', padx = (5, 0))
 buttonFrameBottomRow = Frame(root, bg = "gray80")
 buttonFrameBottomRow.pack(pady = 2)
 
-setColorButton = ttk.Button(buttonFrameBottomRow,text='Color Bro', takefocus = False, command = setColor)
+setColorButton = ttk.Button(buttonFrameBottomRow,text='Color Bro', takefocus = False, command = setColor, state = DISABLED)
 setColorButton.pack(side='left', padx = (0, 5))
 
 copyButton = ttk.Button(buttonFrameBottomRow,text='Copy Bro', takefocus = False, command = copyImage, state = DISABLED)
