@@ -97,6 +97,7 @@ def generateImage(phrase, usePhraseForSeed = True):
     style = random.randrange(2)+1
     base = resource_path("bbBase" + str(style) + ".jpg")
     bubble = resource_path("sb" + str(style) + ".png")
+    phraseForSeed = phrase #so the seed is calculated without variation from newlines
     with Image.open(base).convert("RGBA") as ball, Image.open(bubble) as speechBubble:
         randomAnchor = "la"
         txt = Image.new("RGBA", ball.size, (255, 255, 255, 0))
@@ -120,7 +121,7 @@ def generateImage(phrase, usePhraseForSeed = True):
             randomAnchor = "ra"
         #sets seed for random color based on phrase
         if usePhraseForSeed:
-            random.seed(phrase.lower())
+            random.seed(phraseForSeed.lower())
         #putting it together
         d.text(textCoord, phrase, fill=(0, 0, 0, 255), anchor = randomAnchor)
         bluredText = txt.filter(ImageFilter.GaussianBlur(.5/style))
