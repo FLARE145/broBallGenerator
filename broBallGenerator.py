@@ -222,15 +222,20 @@ def unsetColor():
 
     updateImage(currentPhrase, False)
     return
+    
+def enterKey(event):
+    updateImage()
+    return 'break'
 
 textArea = Text(root, height = 1, width = 25)
 textArea.pack(pady = 0)
+textArea.bind('<Return>', enterKey)
 buttonFrame = Frame(root, bg = "gray80")
 buttonFrame.pack(pady = 5)
 ttk.Button(buttonFrame,text='Meet New Bro', takefocus = False, command = updateImage).pack(side='left', padx = (0, 5))
 
-copyButton = ttk.Button(buttonFrame,text='Copy Bro', takefocus = False, command = copyImage, state = DISABLED)
-copyButton.pack(side='right', padx = (5, 0))
+saveButton = ttk.Button(buttonFrame,text='Keep Bro', takefocus = False, command = saveImage, state = DISABLED)
+saveButton.pack(side='right', padx = (5, 0))
 
 buttonFrameBottomRow = Frame(root, bg = "gray80")
 buttonFrameBottomRow.pack(pady = 2)
@@ -238,8 +243,8 @@ buttonFrameBottomRow.pack(pady = 2)
 setColorButton = ttk.Button(buttonFrameBottomRow,text='Color Bro', takefocus = False, command = setColor)
 setColorButton.pack(side='left', padx = (0, 5))
 
-saveButton = ttk.Button(buttonFrameBottomRow,text='Keep Bro', takefocus = False, command = saveImage, state = DISABLED)
-saveButton.pack(side='right', padx = (5, 0))
+copyButton = ttk.Button(buttonFrameBottomRow,text='Copy Bro', takefocus = False, command = copyImage, state = DISABLED)
+copyButton.pack(side='right', padx = (5, 0))
 
 #unsetColorButton = ttk.Button(buttonFrameBottomRow,text='Randomly Color Bro', takefocus = False, command = unsetColor)
 #unsetColorButton.pack(side='right', padx = (5,0))
