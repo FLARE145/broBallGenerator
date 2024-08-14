@@ -207,6 +207,7 @@ def setColor():
     #print(chosenColor)
 
     updateImage(currentPhrase)
+    chosenColor = 0 #this makes it work how i want
 
 
     return
