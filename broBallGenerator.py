@@ -78,7 +78,7 @@ def generatePhrase():
 #random rgb color but 50% chance it limits the higher values
 def getColor():
     global chosenColor
-    print(chosenColor)
+    #print(chosenColor)
     if chosenColor == 0:
     # Random
         if random.randrange(2) == 1:
@@ -206,7 +206,7 @@ def setColor():
     global currentPhrase
 
     chosenColor = colorchooser.askcolor(title = "Color me Bro")
-    print(chosenColor)
+    #print(chosenColor)
 
     updateImage(currentPhrase)
 
