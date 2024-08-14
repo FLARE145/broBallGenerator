@@ -228,9 +228,6 @@ buttonFrame = Frame(root, bg = "gray80")
 buttonFrame.pack(pady = 5)
 ttk.Button(buttonFrame,text='Meet New Bro', takefocus = False, command = updateImage).pack(side='left', padx = (0, 5))
 
-saveButton = ttk.Button(buttonFrame,text='Keep Bro', takefocus = False, command = saveImage, state = DISABLED)
-saveButton.pack(side='right', padx = (5, 0))
-
 copyButton = ttk.Button(buttonFrame,text='Copy Bro', takefocus = False, command = copyImage, state = DISABLED)
 copyButton.pack(side='right', padx = (5, 0))
 
@@ -238,10 +235,13 @@ buttonFrameBottomRow = Frame(root, bg = "gray80")
 buttonFrameBottomRow.pack(pady = 2)
 
 setColorButton = ttk.Button(buttonFrameBottomRow,text='Color Bro', takefocus = False, command = setColor)
-setColorButton.pack(side='left', padx = (5,0))
+setColorButton.pack(side='left', padx = (0, 5))
 
-unsetColorButton = ttk.Button(buttonFrameBottomRow,text='Randomly Color Bro', takefocus = False, command = unsetColor)
-unsetColorButton.pack(side='right', padx = (5,0))
+saveButton = ttk.Button(buttonFrameBottomRow,text='Keep Bro', takefocus = False, command = saveImage, state = DISABLED)
+saveButton.pack(side='right', padx = (5, 0))
+
+#unsetColorButton = ttk.Button(buttonFrameBottomRow,text='Randomly Color Bro', takefocus = False, command = unsetColor)
+#unsetColorButton.pack(side='right', padx = (5,0))
 
 chosenColor = 0
 color = 0
